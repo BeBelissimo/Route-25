@@ -16,7 +16,7 @@ Availability, Throughput, Successability, Reliability, Compliance, BestPractices
 {
     "MAE_log": 0.433020506986444,
     "RMSE_log": 0.5796967904039659,
-    "R2_log": 0.730511893360188
+    "R2_log": 0.730117732914174
 }
 
 ## Limitations
