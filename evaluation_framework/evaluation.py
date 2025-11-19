@@ -1,6 +1,7 @@
 
 import os
 import joblib
+import json
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -68,53 +69,87 @@ def evaluate_classification(model_path, preprocessor_path, X_test, y_test, repor
     print(f"✅ Avaliação concluída para {model_name}. Métricas salvas em {report_dir}")
     return metrics
 
+
 # =========================
-# Função para avaliação de regressão
+# Função para avaliação de regressão (com suporte a log-transform)
 # =========================
-def evaluate_regression(model_path, scaler_path, X_test, y_test, report_dir, model_name):
+
+def evaluate_regression(model_path, scaler_path, X_test, y_test, report_dir, model_name, log_target=False, log=None):
     """
     Avalia um modelo de regressão e salva métricas e gráficos.
+    Suporte a log-transform via log_target ou log.
+
+    Parâmetros:
+        model_path (str): Caminho para o arquivo do modelo.
+        scaler_path (str): Caminho para o scaler (opcional).
+        X_test (pd.DataFrame ou np.ndarray): Dados de teste.
+        y_test (array-like): Valores reais.
+        report_dir (str): Diretório para salvar relatórios.
+        model_name (str): Nome do modelo.
+        log_target (bool): Se True, aplica np.expm1 para inverter transformação log.
+        log (bool): Alias para log_target.
+
+    Retorna:
+        dict: Métricas calculadas.
     """
     os.makedirs(report_dir, exist_ok=True)
 
-    # Carregar modelo e scaler
-    model = joblib.load(model_path)
-    scaler = joblib.load(scaler_path) if scaler_path else None
+    # Compatibilidade com alias
+    if log is not None:
+        log_target = log
 
-    # Pré-processar dados
-    X_test_scaled = scaler.transform(X_test) if scaler else X_test
+    try:
+        # Carregar modelo e scaler
+        model = joblib.load(model_path)
+        scaler = joblib.load(scaler_path) if scaler_path else None
 
-    # Predições
-    y_pred = model.predict(X_test_scaled)
+        # Pré-processar dados
+        X_test_scaled = scaler.transform(X_test) if scaler else X_test
 
-    # Métricas
-    mae = mean_absolute_error(y_test, y_pred)
-    rmse = np.sqrt(mean_squared_error(y_test, y_pred))
-    r2 = r2_score(y_test, y_pred)
+        # Predições
+        y_pred = model.predict(X_test_scaled)
 
-    metrics = {"MAE": mae, "RMSE": rmse, "R2": r2}
+        # Inverter transformação do target se necessário
+        if hasattr(model, 'inverse_transform'):
+            y_pred = model.inverse_transform(y_pred)
+        elif log_target:
+            y_pred = np.expm1(y_pred)
 
-    # Salvar métricas
-    pd.DataFrame([metrics]).to_csv(os.path.join(report_dir, f"{model_name}_metrics.csv"), index=False)
+        # Métricas
+        mae = mean_absolute_error(y_test, y_pred)
+        rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+        r2 = r2_score(y_test, y_pred)
 
-    # Gráfico Pred vs Real
-    plt.figure(figsize=(6,6))
-    plt.scatter(y_test, y_pred, alpha=0.6)
-    plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'r--')
-    plt.title(f'Predicted vs Actual - {model_name}')
-    plt.xlabel('Actual')
-    plt.ylabel('Predicted')
-    plt.savefig(os.path.join(report_dir, f"{model_name}_pred_vs_actual.png"))
-    plt.close()
+        metrics = {"MAE": mae, "RMSE": rmse, "R2": r2}
 
-    # Distribuição dos erros
-    errors = y_test - y_pred
-    plt.figure(figsize=(6,4))
-    sns.histplot(errors, bins=30, kde=True)
-    plt.title(f'Error Distribution - {model_name}')
-    plt.xlabel('Error')
-    plt.savefig(os.path.join(report_dir, f"{model_name}_error_distribution.png"))
-    plt.close()
+        # Salvar métricas em CSV e JSON
+        pd.DataFrame([metrics]).to_csv(os.path.join(report_dir, f"{model_name}_metrics.csv"), index=False)
+        with open(os.path.join(report_dir, f"{model_name}_metrics.json"), 'w') as f:
+            json.dump(metrics, f, indent=4)
 
-    print(f"✅ Avaliação concluída para {model_name}. Métricas salvas em {report_dir}")
-    return metrics
+        # Gráfico Pred vs Real
+        plt.figure(figsize=(6,6))
+        plt.scatter(y_test, y_pred, alpha=0.6)
+        plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'r--')
+        plt.title(f'Predicted vs Actual - {model_name}')
+        plt.xlabel('Actual')
+        plt.ylabel('Predicted')
+        plt.savefig(os.path.join(report_dir, f"{model_name}_pred_vs_actual.png"))
+        plt.close()
+
+        # Distribuição dos erros
+        errors = y_test - y_pred
+        plt.figure(figsize=(6,4))
+        sns.histplot(errors, bins=30, kde=True)
+        plt.title(f'Error Distribution - {model_name}')
+        plt.xlabel('Error')
+        plt.savefig(os.path.join(report_dir, f"{model_name}_error_distribution.png"))
+        plt.close()
+
+        print(f"✅ Avaliação concluída para {model_name}. Métricas salvas em {report_dir}")
+        return metrics
+
+    except Exception as e:
+        print(f"❌ Erro na avaliação de regressão: {e}")
+        return {}
+
