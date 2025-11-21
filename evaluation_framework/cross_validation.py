@@ -9,7 +9,6 @@ from sklearn.metrics import (
 )
 
 
-
 # =========================
 # Função para cross-validation
 # =========================
@@ -33,14 +32,20 @@ def cross_validate_model(model, X, y, n_splits=5, metrics=["rmse", "mae", "r2"],
         X_train, X_test = X[train_idx], X[test_idx]
         y_train, y_test = y[train_idx], y[test_idx]
 
-        model.fit(X_train, y_train)
+        
+        # Ajuste para classes começarem em 0
+        y_train_adj = y_train - 1
+        y_test_adj = y_test - 1
+
+
+        model.fit(X_train, y_train_adj)
         y_pred = model.predict(X_test)
     
         if is_classifier(model):
 
-            classes = np.unique(y_test)
+            classes = np.unique(y_test_adj)
             class_mapping = {cls: idx for idx, cls in enumerate(classes)}
-            y_test_mapped = np.array([class_mapping[c] for c in y_test])
+            y_test_mapped = np.array([class_mapping[c] for c in y_test_adj])
             y_pred_mapped = np.array([class_mapping[c] for c in y_pred])
 
             
