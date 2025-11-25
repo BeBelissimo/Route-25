@@ -1,0 +1,14 @@
+artifact_uri: file:///c:/Users/bbelissi/OneDrive%20-%20Capgemini/Desktop/ROUTE%2025/mlruns/0/792b3763aec14d5b8bbed083aef125b0/artifacts
+end_time: 1764071178503
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 792b3763aec14d5b8bbed083aef125b0
+run_name: xgboost
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1764071178192
+status: 3
+tags: []
+user_id: bbelissi

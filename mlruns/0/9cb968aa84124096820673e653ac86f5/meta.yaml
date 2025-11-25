@@ -1,0 +1,14 @@
+artifact_uri: file:///c:/Users/bbelissi/OneDrive%20-%20Capgemini/Desktop/ROUTE%2025/mlruns/0/9cb968aa84124096820673e653ac86f5/artifacts
+end_time: 1764066963389
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 9cb968aa84124096820673e653ac86f5
+run_name: linear
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1764066963334
+status: 3
+tags: []
+user_id: bbelissi

@@ -1,0 +1,14 @@
+artifact_uri: file:///c:/Users/bbelissi/OneDrive%20-%20Capgemini/Desktop/ROUTE%2025/mlruns/0/7328fed85fe949fea9287b5c66a318aa/artifacts
+end_time: 1764070704393
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 7328fed85fe949fea9287b5c66a318aa
+run_name: ridge
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1764070704143
+status: 3
+tags: []
+user_id: bbelissi

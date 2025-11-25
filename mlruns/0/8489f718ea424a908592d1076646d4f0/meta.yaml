@@ -1,0 +1,14 @@
+artifact_uri: file:///c:/Users/bbelissi/OneDrive%20-%20Capgemini/Desktop/ROUTE%2025/mlruns/0/8489f718ea424a908592d1076646d4f0/artifacts
+end_time: 1764070974343
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 8489f718ea424a908592d1076646d4f0
+run_name: random_forest
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1764070974188
+status: 3
+tags: []
+user_id: bbelissi

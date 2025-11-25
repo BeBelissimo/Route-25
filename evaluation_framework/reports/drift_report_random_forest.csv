@@ -1,0 +1,9 @@
+feature,PSI,KS_stat,KS_p_value,drift_flag
+feature_0,0.164,0.0814,0.7964,False
+feature_1,0.2649,0.1273,0.2737,True
+feature_2,0.4148,0.0968,0.6066,True
+feature_3,0.1218,0.1213,0.3272,True
+feature_4,0.1354,0.1124,0.4143,True
+feature_5,0.0292,0.0521,0.9943,False
+feature_6,0.3113,0.0856,0.7464,True
+feature_7,0.2116,0.0763,0.8563,False
